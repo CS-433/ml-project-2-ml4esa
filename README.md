@@ -22,6 +22,10 @@ This project contains a paper to explain everything in it.
   git clone https://github.com/CS-433/ml-project-2-ml4esa
 ```
 
+2 - Add the data set of EDAC in Venus Express
+
+PS:Remove all the blabla before and rename the first column to DATE_TIME and make sure there is just one tab between the 2 columns.
+
 [![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-718a45dd9cf7e7f842a935f5ebbe5719a5e09af4491e668f4dbf3b35d5cca122.svg)](https://classroom.github.com/online_ide?assignment_repo_id=13033034&assignment_repo_type=AssignmentRepo)
 
 ## Assignment due date
