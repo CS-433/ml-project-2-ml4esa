@@ -1,4 +1,4 @@
-No. Start-UT(date) Start-UT(time) End-UT(date) End-UT(time) Shock-Time(date) Shock-Time(time) Heliocentric-Distance(au) Bmean(nT) Bmax(nT) Nmean(cm−3) Nmax(cm−3) Vmean(km s−1) Vmax(km s−1) Pdymean(nPa) Pdymax(nPa) SEP-Peak-Time(Ions)(date) SEP-Peak-Time(Ions)(time) SEP-Peak-Time(Electrons)(date) SEP-Peak-Time(Electrons)(time)
+No. Start-UT(date) Start-UT(time) End-UT(date) End-UT(time) Shock-Time(date) Shock-Time(time) Heliocentric-Distance(au) Bmean(nT) Bmax(nT) Nmean(cm−3) Nmax(cm−3) Vmean(km.s−1) Vmax(km.s−1) Pdymean(nPa) Pdymax(nPa) SEP-Peak-Time(Ions)(date) SEP-Peak-Time(Ions)(time) SEP-Peak-Time(Electrons)(date) SEP-Peak-Time(Electrons)(time)
 1 2014.12.18 14:24 2014.12.21 00:00 NaN NaN 1.38 6.77 12.32 5.10 10.93 366.8 423.8 1.15 2.32 2014.12.19 04:51 2014.12.18 05:36
 2 2015.02.27 06:40 2015.02.28 04:40 NaN NaN 1.42 8.03 14.17 6.86 9.67 386.9 429.1 1.72 2.49 2015.02.27 11:41 2015.02.27 12:51
 3 2015.03.04 04:50 2015.03.04 22:00 NaN NaN 1.43 13.14 25.45 4.44 12.70 520.9 615.0 2.02 8.02 2015.03.03 20:05 2015.03.03 18:30
