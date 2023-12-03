@@ -123,5 +123,3 @@ Event ID	Date-Time	Type	Instrument(s)	Location info (Event or Sub-spacecraft)	La
 122	2016-01-02T07:33:02.0	Outburst	ALICE	S	-67.1	13.3	Feldman et al., The Nature and frequency of the gas outburst in comet 67P/Churyumov-Gerasimenko observed by the Alice far-ultraviolet spectrograph on Rosetta, Astrophysical Jounral Letters, 825, 2016	 
 123	2016-01-02T12:59:09.0	Outburst	ALICE	S	-69.2	217	Feldman et al., The Nature and frequency of the gas outburst in comet 67P/Churyumov-Gerasimenko observed by the Alice far-ultraviolet spectrograph on Rosetta, Astrophysical Jounral Letters, 825, 2016	 
 124	2016-01-02T19:07:30.0	Outburst	ALICE	S	-71.6	42.5	Feldman et al., The Nature and frequency of the gas outburst in comet 67P/Churyumov-Gerasimenko observed by the Alice far-ultraviolet spectrograph on Rosetta, Astrophysical Jounral Letters, 825, 2016	 
- 	 	 	 	 	 	 	 	 
- 
