@@ -83,7 +83,7 @@ async def load_all_files(directory_urls: list[str], measures: list[str]) -> list
     # Get all
     tasks: list[Coroutine[tuple]] = []
     res: list[tuple] = []
-    async for directory_url in tqdm(directory_urls, total=len(directory_urls)):
+    async for directory_url in tqdm(directory_urls, total=len(directory_urls), desc=f"Loading instruments {measures}"):
         tasks.append(load_edac_from_website_dir(directory_url, measures))
         if len(tasks) > 3:
             res.extend(await asyncio.gather(*tasks))
@@ -94,11 +94,11 @@ async def load_all_files(directory_urls: list[str], measures: list[str]) -> list
 
 
 # %%
-def post_process_data(request_res: list, measures: list[str]):
+def post_process_data(request_res: list, measures: list[str], frequency: str):
     res_data = [r[0] for r in request_res]
     res_file_names = [r[1] for r in request_res]
 
-    data = {name: [r[name].resample('D').max() for r in res_data if isinstance(r[name].index, pd.DatetimeIndex)] for name in measures}
+    data = {name: [r[name].resample(frequency).max() for r in res_data if isinstance(r[name].index, pd.DatetimeIndex)] for name in measures}
     data_file_names = {name: [r[name] for r in res_file_names] for name in measures}
     data = {name: pd.concat(d) for name, d in data.items()}
     return data, data_file_names
