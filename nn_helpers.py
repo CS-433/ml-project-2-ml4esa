@@ -131,12 +131,20 @@ def plot_metrics(metrics_array, window_sizes):
     plt.show()
     
     # Plot for Precision, Recall, and F1 Score
-    metrics_df_melted = pd.melt(metrics_df, id_vars='window size', value_vars=['precision', 'recall', 'f1 score'])
+    metrics_df_melted = pd.melt(metrics_df, id_vars='window size', value_vars=['precision', 'recall'])
     sns.set_style('whitegrid')
     sns.set_palette('Set2')
     sns.lineplot(x='window size', y='value', hue='variable', data=metrics_df_melted, marker='o')
     plt.xscale('log')  # Set x-axis to logarithmic scale
-    plt.title('Precision, Recall, and F1 Score')
+    plt.title('Precision and Recall')
+    plt.show()
+
+    # Plot for F1 score
+    sns.set_style('whitegrid')
+    sns.set_palette('Set2')
+    sns.lineplot(x='window size', y='f1 score', data=metrics_df, marker='o')
+    plt.xscale('log')  # Set x-axis to logarithmic scale
+    plt.title('F1 score')
     plt.show()
 
 def print_improvement(test_metrics_1, test_metrics_2, improvement_name):
