@@ -24,6 +24,30 @@ def print_metrics(model_name, y_true, y_pred):
     print(f'Recall: {round(skm.recall_score(y_true, y_pred), 2)}')
     print(f'F1 score: {round(skm.f1_score(y_true, y_pred), 2)}')
 
+def augmentate(x, y, n):
+    '''
+    Over representation of 1s (minority class)
+    '''
+    x_1 = x[y == 1]
+    y_1 = y[y == 1]
+    x_0 = x[y == -1]
+    y_0 = y[y == -1]
+
+    # Augmentating by n the minority class samples
+    x_1_augmented = np.repeat(x_1, n, axis=0)
+    y_1_augmented = np.repeat(y_1, n)
+
+    # Combine original majority class and augmented minority class
+    new_x = np.vstack((x_0, x_1_augmented))
+    new_y = np.concatenate((y_0, y_1_augmented))
+
+    # Shuffle
+    idx = np.random.permutation(new_x.shape[0])
+    new_x = new_x[idx]
+    new_y = new_y[idx]
+
+    return new_x, new_y
+
 def create_series(X, n):
     """
     Create a 2D array where each row is a sliding window view of array X with length n.
@@ -65,9 +89,12 @@ def create_series_dim(X, n):
 
     return series
 
-def neural_net(X, y, window_size, epochs=10, batch_size=32, with_class_weights=False):
+def neural_net(X, y, window_size, epochs=10, batch_size=32, with_class_weights=False, augmentation = 0):
     X1_series = create_series(X, window_size) # each line is a series of length window_size
     y1 = y[window_size-1:].astype('float32') # the label is the last element of the series
+
+    if augmentation > 0:
+        X1_series, y1 = augmentate(X1_series, y1, augmentation)
 
     # split the data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(X1_series, y1, test_size=0.2, random_state=42)
@@ -91,7 +118,7 @@ def neural_net(X, y, window_size, epochs=10, batch_size=32, with_class_weights=F
     # Evaluate the model on the test set
     test_metrics = model_1.evaluate(X_test, y_test)
     test_metrics[4] = test_metrics[4][0] # F1 score is an array of one elemet
-    return test_metrics
+    return test_metrics, model_1
 
 def neural_net_comp(X, y, window_sizes, epochs=10, batch_size=32, dim=False, with_class_weights=False):
     '''
@@ -101,9 +128,9 @@ def neural_net_comp(X, y, window_sizes, epochs=10, batch_size=32, dim=False, wit
     metrics_array = []
     for window_size in window_sizes:
         if dim:
-            test_metrics = neural_net_dim(X, y, window_size, epochs, batch_size, with_class_weights)
+            test_metrics, _ = neural_net_dim(X, y, window_size, epochs, batch_size, with_class_weights)
         else:
-            test_metrics = neural_net(X, y, window_size, with_class_weights)
+            test_metrics, _ = neural_net(X, y, window_size, with_class_weights)
         metrics_array.append(test_metrics)
     return metrics_array
 
@@ -113,22 +140,6 @@ def plot_metrics(metrics_array, window_sizes):
     '''
     metrics_df = pd.DataFrame(metrics_array, columns=['loss', 'accuracy', 'precision', 'recall', 'f1 score'])
     metrics_df['window size'] = window_sizes
-    
-    # Plot for Loss
-    sns.set_style('whitegrid')
-    sns.set_palette('Set2')
-    sns.lineplot(x='window size', y='loss', data=metrics_df, marker='o')
-    plt.xscale('log')  # Set x-axis to logarithmic scale
-    plt.title('Loss')
-    plt.show()
-    
-    # Plot for Accuracy
-    sns.set_style('whitegrid')
-    sns.set_palette('Set2')
-    sns.lineplot(x='window size', y='accuracy', data=metrics_df, marker='o')
-    plt.xscale('log')  # Set x-axis to logarithmic scale
-    plt.title('Accuracy')
-    plt.show()
     
     # Plot for Precision, Recall, and F1 Score
     metrics_df_melted = pd.melt(metrics_df, id_vars='window size', value_vars=['precision', 'recall'])
@@ -145,6 +156,14 @@ def plot_metrics(metrics_array, window_sizes):
     sns.lineplot(x='window size', y='f1 score', data=metrics_df, marker='o')
     plt.xscale('log')  # Set x-axis to logarithmic scale
     plt.title('F1 score')
+    plt.show()
+
+    # Plot for Accuracy
+    sns.set_style('whitegrid')
+    sns.set_palette('Set2')
+    sns.lineplot(x='window size', y='accuracy', data=metrics_df, marker='o')
+    plt.xscale('log')  # Set x-axis to logarithmic scale
+    plt.title('Accuracy')
     plt.show()
 
 def print_improvement(test_metrics_1, test_metrics_2, improvement_name):
@@ -164,9 +183,12 @@ def print_improvement(test_metrics_1, test_metrics_2, improvement_name):
     print(f'Recall: {round(test_metrics_1[3] - test_metrics_2[3], 2)}')
     print(f'F1 score: {round(test_metrics_1[4] - test_metrics_2[4], 2)}')
 
-def neural_net_dim(X, y, window_size, epochs=10, batch_size=32, with_class_weights=False):
+def neural_net_dim(X, y, window_size, epochs=10, batch_size=32, with_class_weights=False, augmentation = 0):
     X1_series = create_series_dim(X, window_size) # each line is a series of length window_size*number of features
     y1 = y[window_size-1:].astype('float32') # the label is the last element of the series
+
+    if augmentation > 0:
+        X1_series, y1 = augmentate(X1_series, y1, augmentation)
 
     # split the data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(X1_series, y1, test_size=0.2, random_state=42)
@@ -191,4 +213,4 @@ def neural_net_dim(X, y, window_size, epochs=10, batch_size=32, with_class_weigh
     # Evaluate the model on the test set
     test_metrics = model_1.evaluate(X_test, y_test)
     test_metrics[4] = test_metrics[4][0] # F1 score is an array of one elemet
-    return test_metrics
+    return test_metrics, model_1
