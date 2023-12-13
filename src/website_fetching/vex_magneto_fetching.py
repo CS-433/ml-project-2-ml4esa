@@ -13,6 +13,8 @@ from tqdm import tqdm
 
 datetime_pattern = r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}  '
 
+data_dir_name = '../../DATA/VEX_MAGNETO/fetched_data2'
+
 
 def load_data(content: StringIO) -> pd.DataFrame:
     # Find first line with datetime
@@ -70,8 +72,8 @@ def fetch_directories(parent_directory: str):
     flinks = list(map(lambda href: urljoin(parent_directory, href), hrefs))
 
     pdir_name = parent_directory.split('/')[-3]
-    cache_name = '../../DATA/VEX_MAGNETO/fetched_data2/cache.json'
-    for flink in flinks:
+    cache_name = f'{data_dir_name}/cache.json'
+    for flink in reversed(flinks):
         link_name = flink.split('/')[-2]
         if not is_cached(pdir_name, cache_name, link_name):
             df = fetch_documents(flink)
@@ -87,13 +89,13 @@ def is_cached(pdir_name: str, cache_name: str, link_name: str):
 
 
 def save_and_cache(df: pd.DataFrame, pdir_name: str, cache_name: str, link_name: str):
-    if os.path.exists(f"../../DATA/VEX_MAGNETO/{pdir_name}.csv"):
-        old_df = pd.read_csv(f"../../DATA/VEX_MAGNETO/fetched_data2/{pdir_name}.csv", sep='\t', index_col='date')
+    if os.path.exists(f"../../DATA/VEX_MAGNETO/fetched_data2/{pdir_name}.csv"):
+        old_df = pd.read_csv(f"{data_dir_name}/{pdir_name}.csv", index_col='date')
         old_df.index = pd.to_datetime(old_df.index)
         new_df = pd.concat([old_df, df])
     else:
         new_df = df
-    new_df.to_csv(f"../../DATA/VEX_MAGNETO/fetched_data2/{pdir_name}.csv", sep='\t')
+    new_df.to_csv(f"{data_dir_name}/{pdir_name}.csv")
     cache = json.load(open(cache_name, 'r'))
     if pdir_name not in cache.keys():
         cache[pdir_name] = []
