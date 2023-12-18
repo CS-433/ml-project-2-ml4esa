@@ -1,17 +1,12 @@
 import torch
 import torch.nn as nn
 import numpy as np
-from sklearn.model_selection import train_test_split
-from torch.utils.data import DataLoader, TensorDataset
+import matplotlib.pyplot as plt
 
-import torch
-import torch.nn as nn
-import numpy as np
 from sklearn.model_selection import train_test_split
 from torch.utils.data import DataLoader, TensorDataset
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
-# Define the sliding window function
 def create_sliding_window_sequences(input_data, output_data, window_size):
     X = []
     y = []
@@ -34,7 +29,7 @@ def calculate_metrics(y_true, y_pred):
     f1 = f1_score(y_true, y_pred)
     return accuracy, precision, recall, f1
 
-# Define the LSTM model
+# LSTM model
 class CMEPredictorLSTM(nn.Module):
     def __init__(self, input_dim, hidden_dim, num_layers):
         super(CMEPredictorLSTM, self).__init__()
@@ -50,5 +45,34 @@ class CMEPredictorLSTM(nn.Module):
         out = self.sigmoid(out)
         return out
 
-# Evaluate the model
-# evaluate the model by predicting on the test set and calculating accuracy, precision, recall, etc.
+# Interpretability
+
+def plot_series(optimized_input, opti_type='max'):
+    # Reshape the optimized input to remove the batch dimension if necessary
+    if len(optimized_input.shape) > 2:
+        optimized_input = optimized_input.reshape((optimized_input.shape[1], optimized_input.shape[2]))
+
+    # Extract the x, y, and z coordinates
+    x_coordinates = optimized_input[:, 0]
+    y_coordinates = optimized_input[:, 1]
+    z_coordinates = optimized_input[:, 2]
+
+    # Generate a time axis based on the number of time steps
+    time_steps = range(len(x_coordinates))
+
+    # Create the plot
+    plt.figure(figsize=(14, 6))
+
+    # Plot each of the coordinates over time
+    plt.plot(time_steps, x_coordinates, label='X Coordinate')
+    plt.plot(time_steps, y_coordinates, label='Y Coordinate')
+    plt.plot(time_steps, z_coordinates, label='Z Coordinate')
+
+    # Add title and labels
+    plt.title(f'Input {opti_type}imally activating the CME predictor model')
+    plt.xlabel('Time Steps (by 5 minutes)')
+    plt.ylabel('Magnetic Field Coordinate Values')
+    plt.legend()
+
+    # Show the plot
+    plt.show()
