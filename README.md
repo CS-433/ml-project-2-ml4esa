@@ -35,3 +35,4 @@ Download the data files and add them to the DATA folder.
 - **DATA** folder: contains the original data, scraped data and cleaned up data. It allows you to run the models without having to reproduce the scraping and preprocessing.
 - **main** notebook: Training and evaluation of our final model.
 - **Other notebooks**: other models that we experimented with (different architectures, input features and hyperparameters)
+- **Final report**: contains the project report which describes in detail the project, our approach, the different models, the results, and the ethical considerations.

@@ -9,6 +9,16 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 
 
 def create_sliding_window_sequences(input_data, output_data, window_size):
+    '''
+    Create a n+1 dimensional array where each row is a sliding window view of array X with length window_size.
+    Parameters:
+    - input_data: nD array
+    - output_data: 1D array
+    - window_size: int, length of the sliding window
+    Returns:
+    - X: n+1 dimensional array
+    - y: 1D array
+    '''
     X = []
     y = []
     for i in range(window_size, len(input_data)):
@@ -16,21 +26,28 @@ def create_sliding_window_sequences(input_data, output_data, window_size):
         y.append(output_data[i])
     return np.array(X), np.array(y)
 
-
 def create_sequences(X, y, time_steps=36):
+    '''
+    Create time series input for the LSTMs
+    Parameters:
+    - input_data: nD array
+    - output_data: 1D array
+    - time_steps: int, length of the sliding window
+    Returns:
+    - X: n+1 dimensional array
+    - y: 1D array
+    '''
     Xs, ys = [], []
     for i in range(len(X) - time_steps):
         Xs.append(X[i:(i + time_steps)])
         ys.append(y[i + time_steps])
     return np.array(Xs), np.array(ys)
 
-
 def create_sequences_without_nan(X, y, time_steps=36):
-    Xs, ys = [], []
-    for i in range(len(X) - time_steps):
-        Xs.append(X[i:(i + time_steps)])
-        ys.append(y[i + time_steps])
-    Xs, ys = np.array(Xs), np.array(ys)
+    '''
+    For debugging purposes
+    '''
+    Xs, ys = create_sequences(X, y, time_steps=time_steps)
     time_steps = Xs.shape[1]
     nb_features = Xs.shape[2]
     Xs = Xs[~np.isnan(Xs).any(axis=-1)]
@@ -38,14 +55,18 @@ def create_sequences_without_nan(X, y, time_steps=36):
     ys = ys[~np.isnan(ys)]
     return Xs, ys
 
-
 def calculate_metrics(y_true, y_pred):
+    '''
+    For a given model, calculates the accuracy, precision, recall, and F1 score
+    Input:
+    - y_true: true labels
+    - y_pred: predicted labels
+    '''
     accuracy = accuracy_score(y_true, y_pred)
     precision = precision_score(y_true, y_pred)
     recall = recall_score(y_true, y_pred)
     f1 = f1_score(y_true, y_pred)
     return accuracy, precision, recall, f1
-
 
 # LSTM model
 class CMEPredictorLSTM(nn.Module):
@@ -63,10 +84,16 @@ class CMEPredictorLSTM(nn.Module):
         out = self.sigmoid(out)
         return out
 
-
 # Interpretability
 
 def plot_series(optimized_input, opti_type='max'):
+    '''
+    Input:
+    - optimized_input: input that maximises a class logit
+    - opti_type: 'max' or 'min'
+    Output:
+    - plot of the timeseries corresponding to the optimized input
+    '''
     # Reshape the optimized input to remove the batch dimension if necessary
     if len(optimized_input.shape) > 2:
         optimized_input = optimized_input.reshape((optimized_input.shape[1], optimized_input.shape[2]))
@@ -96,15 +123,30 @@ def plot_series(optimized_input, opti_type='max'):
     # Show the plot
     plt.show()
 
-
 def add_noise(data: np.ndarray, std: float = 0.1):
+    '''
+    Add noise to create new intances of the minority class
+    Input:
+    - data: nD array
+    - std: standard deviation of the noise
+    Output:
+    - augmented_data: nD array with the added noise
+    '''
     assert data.ndim == 3
     noise_data = np.random.normal(0, std, data.shape)
     augmented_data = data + noise_data
     return augmented_data
 
-
 def augment_data(data: np.ndarray, labels: np.ndarray, label_to_augment: int = 1, factor: int = None, std: float = 0.1):
+    '''
+    Data augmentation: create new instances for the minority class by adding noise to existing instances
+    Input:
+    - data: nD array
+    - labels: 1D array
+    - label_to_augment: label of the minority class
+    - factor: number of new instances to create
+    - std: standard deviation of the noise
+    '''
     assert data.ndim == 3
     assert labels.ndim == 1
 
