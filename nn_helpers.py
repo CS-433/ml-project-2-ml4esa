@@ -18,6 +18,9 @@ import tensorflow as tf
 from tensorflow.keras import layers, models
 
 def print_metrics(model_name, y_true, y_pred):
+    '''
+    For a given model, prints the accuracy, precision, recall, and F1 score
+    '''
     print(f'Performance of {model_name}:')
     print(f'Accuracy: {round(skm.accuracy_score(y_true, y_pred), 2)}')
     print(f'Precision: {round(skm.precision_score(y_true, y_pred), 2)}')
@@ -27,6 +30,13 @@ def print_metrics(model_name, y_true, y_pred):
 def augmentate(x, y, n):
     '''
     Over representation of 1s (minority class)
+    Parameters:
+    - x: array of features
+    - y: array of labels
+    - n: number of times we want to augmentate the minority class
+    Returns:
+    - new_x: array of features with the augmented minority class
+    - new_y: array of labels with the augmented minority class
     '''
     x_1 = x[y == 1]
     y_1 = y[y == 1]
@@ -90,6 +100,20 @@ def create_series_dim(X, n):
     return series
 
 def neural_net(X, y, window_size, epochs=10, batch_size=32, with_class_weights=False, augmentation = 0):
+    '''
+    Train a neural network for certain hyperparameters
+    Parameters:
+    - X: array of features
+    - y: array of labels
+    - window_size: size of the sliding window (for the time series)
+    - epochs: number of epochs
+    - batch_size: batch size
+    - with_class_weights: boolean, if True, we mitigate class imbalance with class weights
+    - augmentation: int, number of times we want to augmentate the minority class (0 by default)
+    Returns:
+    - test_metrics: array of metrics for the test set
+    - model_1: trained model
+    '''
     X1_series = create_series(X, window_size) # each line is a series of length window_size
     y1 = y[window_size-1:].astype('float32') # the label is the last element of the series
 
@@ -123,7 +147,7 @@ def neural_net(X, y, window_size, epochs=10, batch_size=32, with_class_weights=F
 def neural_net_comp(X, y, window_sizes, epochs=10, batch_size=32, dim=False, with_class_weights=False):
     '''
     Compares the performance of the neural network with different window sizes
-    for each window, we get info on : loss, accuracy, precision, recall, f1 score
+    for each window, we get info on main metrics: loss, accuracy, precision, recall, f1 score
     '''
     metrics_array = []
     for window_size in window_sizes:
@@ -184,6 +208,9 @@ def print_improvement(test_metrics_1, test_metrics_2, improvement_name):
     print(f'F1 score: {round(test_metrics_1[4] - test_metrics_2[4], 2)}')
 
 def neural_net_dim(X, y, window_size, epochs=10, batch_size=32, with_class_weights=False, augmentation = 0):
+    '''
+    Similar to neural_net, but for multidimensional data (more than one feature as input)
+    '''
     X1_series = create_series_dim(X, window_size) # each line is a series of length window_size*number of features
     y1 = y[window_size-1:].astype('float32') # the label is the last element of the series
 
