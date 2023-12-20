@@ -111,7 +111,7 @@ def neural_net(X, y, window_size, epochs=10, batch_size=32, with_class_weights=F
     
     if not with_class_weights : #default
         model_1.fit(X_train, y_train, epochs=epochs, batch_size=batch_size)
-    else : # mitigate class imbalance with class weights
+    else : # mitigate class imbalance with class pos_weight
         class_weights = class_weight.compute_class_weight('balanced', np.unique(y_train), y_train)
         model_1.fit(X_train, y_train, epochs=epochs, batch_size=batch_size, class_weight=class_weights)
     
@@ -206,7 +206,7 @@ def neural_net_dim(X, y, window_size, epochs=10, batch_size=32, with_class_weigh
     
     if not with_class_weights : #default
         model_1.fit(X_train, y_train, epochs=epochs, batch_size=batch_size)
-    else : # mitigate class imbalance with class weights
+    else : # mitigate class imbalance with class pos_weight
         class_weights = class_weight.compute_class_weight('balanced', classes=np.unique(y_train), y=y_train)
         model_1.fit(X_train, y_train, epochs=epochs, batch_size=batch_size, class_weight=class_weights)
     
