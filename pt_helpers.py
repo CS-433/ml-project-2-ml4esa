@@ -95,3 +95,32 @@ def plot_series(optimized_input, opti_type='max'):
 
     # Show the plot
     plt.show()
+
+
+def add_noise(data: np.ndarray, std: float = 0.1):
+    assert data.ndim == 3
+    noise_data = np.random.normal(0, std, data.shape)
+    augmented_data = data + noise_data
+    return augmented_data
+
+
+def augment_data(data: np.ndarray, labels: np.ndarray, label_to_augment: int = 1, factor: int = None, std: float = 0.1):
+    assert data.ndim == 3
+    assert labels.ndim == 1
+
+    # Get the indices of the data to augment
+    indices = np.where(labels == label_to_augment)
+    data_to_augment = data[indices]
+
+    if factor is None:
+        factor = (len(data) - len(data_to_augment)) // len(data_to_augment)
+
+    # Create the data to augment by repeating the data
+    factored = [data_to_augment for _ in range(factor)]
+    factored_data_to_augment = np.concatenate(factored, axis=0)
+    noisy_data = add_noise(factored_data_to_augment, std=std)
+
+    # Augment the data
+    X_augmented = np.concatenate([data, noisy_data], axis=0)
+    y_augmented = np.concatenate([labels, np.ones(len(data_to_augment) * factor)], axis=0)
+    return X_augmented, y_augmented
