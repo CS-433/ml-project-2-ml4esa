@@ -2,9 +2,9 @@
 
 This is a project for the EPFL class Machine Learning CS-433 in collaboration with the ESA lab ESTEC.
 
-In this project, we will predict coronal mass ejections with the EDAC counters of several spacecrafts.
+In this project, we will predict coronal mass ejections with the data from EDAC counters and magnetic sensors of several spacecrafts.
 
-This project contains a paper to explain everything in it.
+This project contains our final report to explain everything in it.
 
 
 ## Agatha DUZAN | Sebastien CHAHOUD | Nastasia MOREL
@@ -22,13 +22,16 @@ This project contains a paper to explain everything in it.
   git clone https://github.com/CS-433/ml-project-2-ml4esa
 ```
 
-2 - Add the data set of EDAC in Venus Express
+2 - Add the data
 
-PS:Remove all the blabla before and rename the first column to DATE_TIME and make sure there is just one tab between the 2 columns.
+Some data files were too large to be on the repo, you can find them on this drive : 
+https://drive.google.com/drive/folders/1ZhoJT79JUiJTjR9oS9j5ZufEsILzMR2O?usp=sharing
 
-[![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-718a45dd9cf7e7f842a935f5ebbe5719a5e09af4491e668f4dbf3b35d5cca122.svg)](https://classroom.github.com/online_ide?assignment_repo_id=13033034&assignment_repo_type=AssignmentRepo)
+Download the data files and add them to the DATA folder.
 
-## Assignment due date
+## Structure of the repo
 
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/fEFF99tU)
-
+- **Data fetching and preprocessing**: all the code we used to fetch the data online and preprocess it can be found here. It also contains the first visualizations of the data.
+- **DATA** folder: contains the original data, scraped data and cleaned up data. It allows you to run the models without having to reproduce the scraping and preprocessing.
+- **main** notebook: Training and evaluation of our final model.
+- **Other notebooks**: other models that we experimented with (different architectures, input features and hyperparameters)
